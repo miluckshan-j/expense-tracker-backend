@@ -1,16 +1,9 @@
 package com.example.demo.transactions;
 
-//import javax.persistence.Entity;
-//import javax.persistence.GeneratedValue;
-//import javax.persistence.GenerationType;
-//import javax.persistence.Id;
-//import java.time.LocalDateTime;
-
 import com.example.demo.categories.Category;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
 
 @Entity
 public class Transaction {

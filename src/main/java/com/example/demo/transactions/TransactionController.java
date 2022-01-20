@@ -33,7 +33,7 @@ public class TransactionController {
             Category category = categoryRepository.findCategoryById(categoryId);
             transaction.setCategory(category);
             transactionRepository.save(transaction);
-            return new ResponseEntity<>(transaction, HttpStatus.OK);
+            return new ResponseEntity<>(transaction, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -49,7 +49,7 @@ public class TransactionController {
         }
     }
 
-    @GetMapping("/transactions/find/{id}")
+    @GetMapping("/transactions/{id}")
     public ResponseEntity findTransactionById(@PathVariable Integer id) {
         try {
             Optional<Transaction> transaction = transactionRepository.findById(id);
@@ -59,7 +59,7 @@ public class TransactionController {
         }
     }
 
-    @DeleteMapping("/transactions/delete/{id}")
+    @DeleteMapping("/transactions/{id}")
     public ResponseEntity deleteTransactionById(@PathVariable Integer id) {
         try {
             transactionRepository.deleteById(id);
@@ -69,7 +69,7 @@ public class TransactionController {
         }
     }
 
-    @PutMapping("/transactions/edit/{id}")
+    @PutMapping("/transactions/{id}")
     public ResponseEntity editTransactionById(@PathVariable Integer id, @RequestParam double amount) {
         try {
             Transaction transaction = transactionRepository.findTransactionById(id);
@@ -79,7 +79,5 @@ public class TransactionController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
     }
 }

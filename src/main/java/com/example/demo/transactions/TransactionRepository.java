@@ -7,5 +7,4 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
     Transaction findTransactionById(Integer id);
 
     void deleteById(Integer id);
-
 }
