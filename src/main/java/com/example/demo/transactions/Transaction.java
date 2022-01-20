@@ -3,9 +3,10 @@ package com.example.demo.transactions;
 import com.example.demo.categories.Category;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-@Entity
+@Entity()
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Transaction {
 
     @Id
@@ -18,16 +19,19 @@ public class Transaction {
 
     private String type;
 
-    private LocalDateTime date;
+    private boolean isRecurring;
+
+    private LocalDate date;
 
     @OneToOne
     private Category category;
 
-    public Transaction(Integer id, String note, double amount, String type, LocalDateTime date, Category category) {
+    public Transaction(Integer id, String note, double amount, String type, boolean isRecurring, LocalDate date, Category category) {
         this.id = id;
         this.note = note;
         this.amount = amount;
         this.type = type;
+        this.isRecurring = isRecurring;
         this.date = date;
         this.category = category;
     }
@@ -68,11 +72,19 @@ public class Transaction {
         this.type = type;
     }
 
-    public LocalDateTime getDate() {
+    public boolean isRecurring() {
+        return isRecurring;
+    }
+
+    public void setIsRecurring(boolean recurring) {
+        isRecurring = recurring;
+    }
+
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

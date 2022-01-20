@@ -3,12 +3,13 @@ package com.example.demo.transactions;
 import com.example.demo.categories.Category;
 import com.example.demo.categories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Transactional
@@ -20,24 +21,6 @@ public class TransactionController {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
-    @PostMapping("/transactions")
-    public ResponseEntity addTransaction(@RequestParam("note") Optional<String> note, @RequestParam double amount, @RequestParam String type, @RequestParam Integer categoryId) {
-        try {
-            Transaction transaction = new Transaction();
-            transaction.setAmount(amount);
-            transaction.setType(type);
-            transaction.setDate(LocalDateTime.now());
-            note.ifPresent(transaction::setNote);
-//            If recurring, add multiple saves or the code below
-            Category category = categoryRepository.findCategoryById(categoryId);
-            transaction.setCategory(category);
-            transactionRepository.save(transaction);
-            return new ResponseEntity<>(transaction, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
     @GetMapping("/transactions")
     public ResponseEntity getTransactions() {
@@ -64,6 +47,76 @@ public class TransactionController {
         try {
             transactionRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/transactions")
+    public ResponseEntity addTransaction(@RequestParam("note") Optional<String> note, @RequestParam double amount, @RequestParam String type, @RequestParam(value = "date", defaultValue = "2022-10-12") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam Integer categoryId, @RequestParam(value = "period") Optional<Integer> period, @RequestParam(value = "frequency", defaultValue = "days") String frequency, @RequestParam(value = "endDate", defaultValue = "2022-12-12") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        try {
+            if (period.isEmpty()) {
+                Transaction transaction = new Transaction();
+                note.ifPresent(transaction::setNote);
+                transaction.setAmount(amount);
+                transaction.setType(type);
+                transaction.setDate(date);
+
+                Category category = categoryRepository.findCategoryById(categoryId);
+                transaction.setCategory(category);
+                transactionRepository.save(transaction);
+                return new ResponseEntity<>(transaction, HttpStatus.CREATED);
+            } else {
+//                Period -> 1, 2, 3, ... n
+//                Frequency -> days, weeks, months
+//                End Date -> YYYY-MM-DD
+                switch (frequency) {
+                    case "months":
+                        for (LocalDate d = date; d.isBefore(endDate); d = d.plusMonths(period.get())) {
+                            Transaction transaction = new Transaction();
+                            note.ifPresent(transaction::setNote);
+                            transaction.setAmount(amount);
+                            transaction.setType(type);
+                            transaction.setDate(date);
+
+                            Category category = categoryRepository.findCategoryById(categoryId);
+                            transaction.setCategory(category);
+                            transaction.setIsRecurring(true);
+                            transaction.setDate(d);
+                            transactionRepository.save(transaction);
+                        }
+                    case "weeks":
+                        for (LocalDate d = date; d.isBefore(endDate); d = d.plusWeeks(period.get())) {
+                            Transaction transaction = new Transaction();
+                            note.ifPresent(transaction::setNote);
+                            transaction.setAmount(amount);
+                            transaction.setType(type);
+                            transaction.setDate(date);
+
+                            Category category = categoryRepository.findCategoryById(categoryId);
+                            transaction.setCategory(category);
+                            transaction.setIsRecurring(true);
+                            transaction.setDate(d);
+                            transactionRepository.save(transaction);
+                        }
+                        break;
+                    default:
+                        for (LocalDate d = date; d.isBefore(endDate); d = d.plusDays(period.get())) {
+                            Transaction transaction = new Transaction();
+                            note.ifPresent(transaction::setNote);
+                            transaction.setAmount(amount);
+                            transaction.setType(type);
+                            transaction.setDate(date);
+
+                            Category category = categoryRepository.findCategoryById(categoryId);
+                            transaction.setCategory(category);
+                            transaction.setIsRecurring(true);
+                            transaction.setDate(d);
+                            transactionRepository.save(transaction);
+                        }
+                }
+                return new ResponseEntity<>(null, HttpStatus.CREATED);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
