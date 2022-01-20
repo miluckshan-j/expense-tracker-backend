@@ -22,13 +22,13 @@ public class TransactionController {
     private CategoryRepository categoryRepository;
 
     @PostMapping("/transactions")
-    public ResponseEntity addTransaction(@RequestParam double amount, @RequestParam String type, @RequestParam Integer categoryId) {
+    public ResponseEntity addTransaction(@RequestParam("note") Optional<String> note, @RequestParam double amount, @RequestParam String type, @RequestParam Integer categoryId) {
         try {
             Transaction transaction = new Transaction();
             transaction.setAmount(amount);
             transaction.setType(type);
             transaction.setDate(LocalDateTime.now());
-//            If note exists, add that
+            note.ifPresent(transaction::setNote);
 //            If recurring, add multiple saves or the code below
             Category category = categoryRepository.findCategoryById(categoryId);
             transaction.setCategory(category);

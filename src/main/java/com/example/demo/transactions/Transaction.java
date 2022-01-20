@@ -12,6 +12,8 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    private String note;
+
     private double amount;
 
     private String type;
@@ -21,8 +23,9 @@ public class Transaction {
     @OneToOne
     private Category category;
 
-    public Transaction(Integer id, double amount, String type, LocalDateTime date, Category category) {
+    public Transaction(Integer id, String note, double amount, String type, LocalDateTime date, Category category) {
         this.id = id;
+        this.note = note;
         this.amount = amount;
         this.type = type;
         this.date = date;
@@ -39,6 +42,14 @@ public class Transaction {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public double getAmount() {
