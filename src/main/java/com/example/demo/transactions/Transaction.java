@@ -23,7 +23,7 @@ public class Transaction {
 
     private LocalDate date;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.ALL) // I'm not sure about this. Miluckshan please check
     private Category category;
 
     public Transaction(Integer id, String note, double amount, String type, boolean isRecurring, LocalDate date, Category category) {
