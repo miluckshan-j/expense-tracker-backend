@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -44,6 +43,16 @@ public class CategoryController {
         try {
             Optional<Category> categories = categoryRepository.findById(id);
             return new ResponseEntity<>(categories, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/categories/{id}")
+    public ResponseEntity deleteCategory(@PathVariable Integer id) {
+        try {
+            categoryRepository.deleteById(id);
+            return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
