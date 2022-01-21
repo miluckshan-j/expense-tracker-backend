@@ -25,7 +25,9 @@ public class Category {
         this.date = date;
     }
 
-    public Category() {}
+    public Category() {
+
+    }
 
     public Integer getId() {
         return id;
