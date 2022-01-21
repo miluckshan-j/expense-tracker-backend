@@ -1,15 +1,13 @@
 package com.example.demo.categories;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 public class Category {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
     private String name;
@@ -18,8 +16,7 @@ public class Category {
 
     private LocalDate date;
 
-    public Category(Integer id, String name, double budget, LocalDate date) {
-        this.id = id;
+    public Category(String name, double budget, LocalDate date) {
         this.name = name;
         this.budget = budget;
         this.date = date;

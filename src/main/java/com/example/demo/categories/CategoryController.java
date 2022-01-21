@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -19,9 +20,11 @@ public class CategoryController {
     public ResponseEntity addCategory(@RequestBody Category category) {
         try {
             category.setDate(LocalDate.now());
+            System.out.println(category.getId());
             categoryRepository.save(category);
             return new ResponseEntity<>(category, HttpStatus.CREATED);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
