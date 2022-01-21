@@ -16,14 +16,11 @@ public class CategoryController {
     private CategoryRepository categoryRepository;
 
     @PostMapping("/categories")
-    public ResponseEntity addCategory(@RequestParam String name, @RequestParam String logo) {
+    public ResponseEntity addCategory(@RequestBody Category newCategory) {
         try {
-            Category category = new Category();
-            category.setName(name);
-            category.setLogo(logo);
-            category.setDate(LocalDate.now());
-            categoryRepository.save(category);
-            return new ResponseEntity<>(category, HttpStatus.CREATED);
+            newCategory.setDate(LocalDate.now());
+            categoryRepository.save(newCategory);
+            return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -35,6 +32,7 @@ public class CategoryController {
             Iterable<Category> categories = categoryRepository.findAll();
             return new ResponseEntity<>(categories, HttpStatus.OK);
         } catch (Exception e) {
+            System.out.println(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -44,6 +42,19 @@ public class CategoryController {
         try {
             Optional<Category> categories = categoryRepository.findById(id);
             return new ResponseEntity<>(categories, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/categories/{id}")
+    public ResponseEntity updateCategoryById(@PathVariable Integer id, @RequestBody Category updatedCategory) {
+        try {
+            Category category = categoryRepository.findCategoryById(id);
+            category.setName(updatedCategory.getName());
+            category.setBudget(updatedCategory.getBudget());
+            categoryRepository.save(category);
+            return new ResponseEntity<>(category, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
