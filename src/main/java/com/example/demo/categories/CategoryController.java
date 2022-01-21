@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class CategoryController {
 
     @Autowired

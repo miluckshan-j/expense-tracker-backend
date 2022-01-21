@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @Transactional
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class TransactionController {
 
     @Autowired
