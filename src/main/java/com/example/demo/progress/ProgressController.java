@@ -1,6 +1,6 @@
 package com.example.demo.progress;
 
-import com.example.demo.ICategoryTotal;
+import com.example.demo.utils.interfaces.ICategoryTotal;
 import com.example.demo.transactions.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;

@@ -1,6 +1,6 @@
 package com.example.demo.transactions;
 
-import com.example.demo.ICategoryTotal;
+import com.example.demo.utils.interfaces.ICategoryTotal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
