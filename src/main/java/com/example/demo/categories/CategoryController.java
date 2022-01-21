@@ -19,7 +19,6 @@ public class CategoryController {
     public ResponseEntity addCategory(@RequestBody Category category) {
         try {
             category.setDate(LocalDate.now());
-            System.out.println(category.getId());
             categoryRepository.save(category);
             return new ResponseEntity<>(category, HttpStatus.CREATED);
         } catch (Exception e) {
