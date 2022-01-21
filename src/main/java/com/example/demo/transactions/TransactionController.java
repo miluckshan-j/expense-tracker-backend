@@ -85,6 +85,7 @@ public class TransactionController {
                             transaction.setDate(d);
                             transactionRepository.save(transaction);
                         }
+                        break;
                     case "weeks":
                         for (LocalDate d = date; d.isBefore(endDate); d = d.plusWeeks(period.get())) {
                             Transaction transaction = new Transaction();
