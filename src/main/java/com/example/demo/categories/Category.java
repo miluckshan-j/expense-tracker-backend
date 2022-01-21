@@ -14,23 +14,18 @@ public class Category {
 
     private String name;
 
-    private String logo;
-
     private double budget;
 
     private LocalDate date;
 
-    public Category(Integer id, String name, String logo, double budget, LocalDate date) {
+    public Category(Integer id, String name, double budget, LocalDate date) {
         this.id = id;
         this.name = name;
-        this.logo = logo;
         this.budget = budget;
         this.date = date;
     }
 
-    public Category() {
-
-    }
+    public Category() {}
 
     public Integer getId() {
         return id;
@@ -46,14 +41,6 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
     }
 
     public double getBudget() {
