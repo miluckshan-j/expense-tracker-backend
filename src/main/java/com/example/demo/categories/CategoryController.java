@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
@@ -20,7 +20,7 @@ public class CategoryController {
             Category category = new Category();
             category.setName(name);
             category.setLogo(logo);
-            category.setDate(LocalDateTime.now());
+            category.setDate(LocalDate.now());
             categoryRepository.save(category);
             return new ResponseEntity<>(category, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -43,6 +43,18 @@ public class CategoryController {
         try {
             Optional<Category> categories = categoryRepository.findById(id);
             return new ResponseEntity<>(categories, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/categories/{id}/budget")
+    public ResponseEntity addBudgetByCategoryId(@PathVariable Integer id, @RequestParam double amount) {
+        try {
+            Category category = categoryRepository.findCategoryById(id);
+            category.setBudget(amount);
+            categoryRepository.save(category);
+            return new ResponseEntity<>(category, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

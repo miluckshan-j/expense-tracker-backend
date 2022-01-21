@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 public class Category {
@@ -16,12 +16,15 @@ public class Category {
 
     private String logo;
 
-    private LocalDateTime date;
+    private double budget;
 
-    public Category(Integer id, String name, String logo, LocalDateTime date) {
+    private LocalDate date;
+
+    public Category(Integer id, String name, String logo, double budget, LocalDate date) {
         this.id = id;
         this.name = name;
         this.logo = logo;
+        this.budget = budget;
         this.date = date;
     }
 
@@ -53,11 +56,19 @@ public class Category {
         this.logo = logo;
     }
 
-    public LocalDateTime getDate() {
+    public double getBudget() {
+        return budget;
+    }
+
+    public void setBudget(double budget) {
+        this.budget = budget;
+    }
+
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 }
