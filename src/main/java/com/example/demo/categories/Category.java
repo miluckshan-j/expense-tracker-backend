@@ -14,11 +14,12 @@ public class Category {
 
     private String name;
 
-    private double budget;
+    private Double budget;
 
     private LocalDate date;
 
-    public Category(String name, double budget, LocalDate date) {
+    public Category(Integer id, String name, Double budget, LocalDate date) {
+        this.id = id;
         this.name = name;
         this.budget = budget;
         this.date = date;
@@ -44,11 +45,11 @@ public class Category {
         this.name = name;
     }
 
-    public double getBudget() {
+    public Double getBudget() {
         return budget;
     }
 
-    public void setBudget(double budget) {
+    public void setBudget(Double budget) {
         this.budget = budget;
     }
 

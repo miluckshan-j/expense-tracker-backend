@@ -1,5 +1,6 @@
 package com.example.demo.categories;
 
+import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,20 +62,15 @@ public class CategoryController {
     public ResponseEntity updateCategoryById(@PathVariable Integer id, @RequestBody Category updatedCategory) {
         try {
             Category category = categoryRepository.findCategoryById(id);
-            category.setName(updatedCategory.getName());
-            category.setBudget(updatedCategory.getBudget());
-            categoryRepository.save(category);
-            return new ResponseEntity<>(category, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
-    @PutMapping("/categories/{id}/budget")
-    public ResponseEntity addBudgetByCategoryId(@PathVariable Integer id, @RequestParam double amount) {
-        try {
-            Category category = categoryRepository.findCategoryById(id);
-            category.setBudget(amount);
+            if (!StringUtils.isEmpty(updatedCategory.getName())) {
+                category.setName(updatedCategory.getName());
+            }
+
+            if (updatedCategory.getBudget() != null) {
+                category.setBudget(updatedCategory.getBudget());
+            }
+
             categoryRepository.save(category);
             return new ResponseEntity<>(category, HttpStatus.OK);
         } catch (Exception e) {
