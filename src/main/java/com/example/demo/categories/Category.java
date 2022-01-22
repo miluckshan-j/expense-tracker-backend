@@ -1,9 +1,10 @@
 package com.example.demo.categories;
 
-import org.hibernate.annotations.Cascade;
-
+import com.example.demo.transactions.Transaction;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 public class Category {
@@ -17,6 +18,10 @@ public class Category {
     private Double budget;
 
     private LocalDate date;
+
+    @OneToMany(mappedBy="category")
+    @JsonIgnore
+    private Set<Transaction> transactions;
 
     public Category(Integer id, String name, Double budget, LocalDate date) {
         this.id = id;
@@ -59,5 +64,9 @@ public class Category {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Set<Transaction> getTransactions() {
+        return transactions;
     }
 }

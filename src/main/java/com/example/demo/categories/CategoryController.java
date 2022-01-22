@@ -38,6 +38,16 @@ public class CategoryController {
         }
     }
 
+    @GetMapping("/categories/{id}/transactions")
+    public ResponseEntity getTransactionsByCategoryId(@PathVariable Integer id) {
+        try {
+            Category category = categoryRepository.findCategoryById(id);
+            return new ResponseEntity<>(category.getTransactions().toArray(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/categories/{id}")
     public ResponseEntity findCategoryById(@PathVariable Integer id) {
         try {
