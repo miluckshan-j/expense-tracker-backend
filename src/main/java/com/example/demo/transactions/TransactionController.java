@@ -39,7 +39,7 @@ public class TransactionController {
         try {
             Iterable<Transaction> transactions = null;
             if (startDate.isEmpty()){
-                transactions = transactionRepository.findAll();
+                transactions = transactionRepository.getTransactions();
             } else {
                 transactions = transactionRepository.getTransactionsBetweenDateRange(startDate.get(),endDate.get());
             }
