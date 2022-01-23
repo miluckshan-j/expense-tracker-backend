@@ -4,6 +4,7 @@ import com.example.demo.categories.Category;
 import com.example.demo.categories.CategoryRepository;
 import com.example.demo.dto.TransactionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,21 +24,26 @@ public class TransactionController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @GetMapping("/transactions")
-    public ResponseEntity getTransactions() {
-        try {
-            Iterable<Transaction> transactions = transactionRepository.findAll();
-            return new ResponseEntity<>(transactions, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @GetMapping("/transactions/{id}")
     public ResponseEntity findTransactionById(@PathVariable Integer id) {
         try {
             Optional<Transaction> transaction = transactionRepository.findById(id);
             return new ResponseEntity<>(transaction, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/transactions")
+    public ResponseEntity getTransactions(@RequestParam(value = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate, @RequestParam(value = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> endDate) {
+        try {
+            Iterable<Transaction> transactions = null;
+            if (startDate.isEmpty()){
+                transactions = transactionRepository.findAll();
+            } else {
+                transactions = transactionRepository.getTransactionsBetweenDateRange(startDate.get(),endDate.get());
+            }
+            return new ResponseEntity<>(transactions, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
