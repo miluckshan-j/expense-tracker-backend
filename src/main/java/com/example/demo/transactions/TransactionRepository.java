@@ -12,8 +12,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 
     Transaction findTransactionById(Integer id);
 
-    void deleteById(Integer id);
-
     @Query(value = "SELECT t.category AS category, SUM(t.amount) AS total FROM Transaction t WHERE t.type= :type AND t.date >= :startDate AND t.date<= :endDate GROUP BY t.category")
     List<ICategoryTotal> getTransactionSpentInCategories(@Param("type") String type, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
