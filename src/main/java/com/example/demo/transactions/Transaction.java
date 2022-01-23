@@ -23,7 +23,8 @@ public class Transaction {
 
     private LocalDate date;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name="category_id", nullable=false)
     private Category category;
 
     public Transaction(Integer id, String note, double amount, String type, boolean isRecurring, LocalDate date, Category category) {

@@ -1,24 +1,29 @@
 package com.example.demo.categories;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.example.demo.transactions.Transaction;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 public class Category {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
     private String name;
 
-    private double budget;
+    private Double budget;
 
     private LocalDate date;
 
-    public Category(Integer id, String name, double budget, LocalDate date) {
+    @OneToMany(mappedBy="category")
+    @JsonIgnore
+    private Set<Transaction> transactions;
+
+    public Category(Integer id, String name, Double budget, LocalDate date) {
         this.id = id;
         this.name = name;
         this.budget = budget;
@@ -45,11 +50,11 @@ public class Category {
         this.name = name;
     }
 
-    public double getBudget() {
+    public Double getBudget() {
         return budget;
     }
 
-    public void setBudget(double budget) {
+    public void setBudget(Double budget) {
         this.budget = budget;
     }
 
@@ -59,5 +64,9 @@ public class Category {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Set<Transaction> getTransactions() {
+        return transactions;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.categories;
 
+import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class CategoryController {
     public ResponseEntity addCategory(@RequestBody Category category) {
         try {
             category.setDate(LocalDate.now());
+            category.setBudget(category.getBudget());
             categoryRepository.save(category);
             return new ResponseEntity<>(category, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -36,6 +38,16 @@ public class CategoryController {
         }
     }
 
+    @GetMapping("/categories/{id}/transactions")
+    public ResponseEntity getTransactionsByCategoryId(@PathVariable Integer id) {
+        try {
+            Category category = categoryRepository.findCategoryById(id);
+            return new ResponseEntity<>(category.getTransactions().toArray(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/categories/{id}")
     public ResponseEntity findCategoryById(@PathVariable Integer id) {
         try {
@@ -46,24 +58,29 @@ public class CategoryController {
         }
     }
 
-    @PutMapping("/categories/{id}")
-    public ResponseEntity updateCategoryById(@PathVariable Integer id, @RequestBody Category updatedCategory) {
+    @DeleteMapping("/categories/{id}")
+    public ResponseEntity deleteCategory(@PathVariable Integer id) {
         try {
-            Category category = categoryRepository.findCategoryById(id);
-            category.setName(updatedCategory.getName());
-            category.setBudget(updatedCategory.getBudget());
-            categoryRepository.save(category);
-            return new ResponseEntity<>(category, HttpStatus.OK);
+            categoryRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PutMapping("/categories/{id}/budget")
-    public ResponseEntity addBudgetByCategoryId(@PathVariable Integer id, @RequestParam double amount) {
+    @PutMapping("/categories/{id}")
+    public ResponseEntity updateCategoryById(@PathVariable Integer id, @RequestBody Category updatedCategory) {
         try {
             Category category = categoryRepository.findCategoryById(id);
-            category.setBudget(amount);
+
+            if (!StringUtils.isEmpty(updatedCategory.getName())) {
+                category.setName(updatedCategory.getName());
+            }
+
+            if (updatedCategory.getBudget() != null) {
+                category.setBudget(updatedCategory.getBudget());
+            }
+
             categoryRepository.save(category);
             return new ResponseEntity<>(category, HttpStatus.OK);
         } catch (Exception e) {

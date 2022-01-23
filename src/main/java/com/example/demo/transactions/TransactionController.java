@@ -2,8 +2,8 @@ package com.example.demo.transactions;
 
 import com.example.demo.categories.Category;
 import com.example.demo.categories.CategoryRepository;
+import com.example.demo.dto.TransactionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,16 +54,16 @@ public class TransactionController {
     }
 
     @PostMapping("/transactions")
-    public ResponseEntity addTransaction(@RequestParam("note") Optional<String> note, @RequestParam double amount, @RequestParam String type, @RequestParam(value = "date", defaultValue = "2022-10-12") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam Integer categoryId, @RequestParam(value = "period") Optional<Integer> period, @RequestParam(value = "frequency", defaultValue = "days") String frequency, @RequestParam(value = "endDate", defaultValue = "2022-12-12") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+    public ResponseEntity addTransaction(@RequestBody TransactionDTO transactionDTO) {
         try {
-            if (period.isEmpty()) {
+            if (transactionDTO.getPeriod() == null) {
                 Transaction transaction = new Transaction();
-                note.ifPresent(transaction::setNote);
-                transaction.setAmount(amount);
-                transaction.setType(type);
-                transaction.setDate(date);
+                transaction.setNote(transactionDTO.getNote());
+                transaction.setAmount(transactionDTO.getAmount());
+                transaction.setType(transactionDTO.getType());
+                transaction.setDate(transactionDTO.getDate());
 
-                Category category = categoryRepository.findCategoryById(categoryId);
+                Category category = categoryRepository.findCategoryById(transactionDTO.getCategoryId());
                 transaction.setCategory(category);
                 transactionRepository.save(transaction);
                 return new ResponseEntity<>(transaction, HttpStatus.CREATED);
@@ -71,57 +71,40 @@ public class TransactionController {
 //                Period -> 1, 2, 3, ... n
 //                Frequency -> days, weeks, months
 //                End Date -> YYYY-MM-DD
-                switch (frequency) {
+                switch (transactionDTO.getFrequency()) {
                     case "months":
-                        for (LocalDate d = date; d.isBefore(endDate); d = d.plusMonths(period.get())) {
-                            Transaction transaction = new Transaction();
-                            note.ifPresent(transaction::setNote);
-                            transaction.setAmount(amount);
-                            transaction.setType(type);
-                            transaction.setDate(date);
-
-                            Category category = categoryRepository.findCategoryById(categoryId);
-                            transaction.setCategory(category);
-                            transaction.setIsRecurring(true);
-                            transaction.setDate(d);
-                            transactionRepository.save(transaction);
+                        for (LocalDate d = transactionDTO.getDate(); d.isBefore(transactionDTO.getEndDate()); d = d.plusMonths(transactionDTO.getPeriod())) {
+                            saveTransaction(transactionDTO, d);
                         }
                         break;
                     case "weeks":
-                        for (LocalDate d = date; d.isBefore(endDate); d = d.plusWeeks(period.get())) {
-                            Transaction transaction = new Transaction();
-                            note.ifPresent(transaction::setNote);
-                            transaction.setAmount(amount);
-                            transaction.setType(type);
-                            transaction.setDate(date);
-
-                            Category category = categoryRepository.findCategoryById(categoryId);
-                            transaction.setCategory(category);
-                            transaction.setIsRecurring(true);
-                            transaction.setDate(d);
-                            transactionRepository.save(transaction);
+                        for (LocalDate d = transactionDTO.getDate(); d.isBefore(transactionDTO.getEndDate()); d = d.plusWeeks(transactionDTO.getPeriod())) {
+                            saveTransaction(transactionDTO, d);
                         }
                         break;
                     default:
-                        for (LocalDate d = date; d.isBefore(endDate); d = d.plusDays(period.get())) {
-                            Transaction transaction = new Transaction();
-                            note.ifPresent(transaction::setNote);
-                            transaction.setAmount(amount);
-                            transaction.setType(type);
-                            transaction.setDate(date);
-
-                            Category category = categoryRepository.findCategoryById(categoryId);
-                            transaction.setCategory(category);
-                            transaction.setIsRecurring(true);
-                            transaction.setDate(d);
-                            transactionRepository.save(transaction);
+                        for (LocalDate d = transactionDTO.getDate(); d.isBefore(transactionDTO.getEndDate()); d = d.plusDays(transactionDTO.getPeriod())) {
+                            saveTransaction(transactionDTO, d);
                         }
                 }
                 return new ResponseEntity<>(null, HttpStatus.CREATED);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void saveTransaction(TransactionDTO transactionDTO, LocalDate d) {
+        Transaction transaction = new Transaction();
+        transaction.setNote(transactionDTO.getNote());
+        transaction.setAmount(transactionDTO.getAmount());
+        transaction.setType(transactionDTO.getType());
+
+        Category category = categoryRepository.findCategoryById(transactionDTO.getCategoryId());
+        transaction.setCategory(category);
+        transaction.setIsRecurring(true);
+        transaction.setDate(d);
+        transactionRepository.save(transaction);
     }
 
     @PutMapping("/transactions/{id}")
