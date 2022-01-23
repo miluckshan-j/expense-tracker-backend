@@ -20,10 +20,10 @@ public class CategoryController {
     public ResponseEntity addCategory(@RequestBody Category category) {
         try {
             category.setDate(LocalDate.now());
+            category.setBudget(category.getBudget());
             categoryRepository.save(category);
             return new ResponseEntity<>(category, HttpStatus.CREATED);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -62,7 +62,7 @@ public class CategoryController {
     public ResponseEntity deleteCategory(@PathVariable Integer id) {
         try {
             categoryRepository.deleteById(id);
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
