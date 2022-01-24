@@ -15,7 +15,7 @@ public class Transaction {
 
     private String note;
 
-    private double amount;
+    private Double amount;
 
     private String type;
 
@@ -27,7 +27,7 @@ public class Transaction {
     @JoinColumn(name="category_id", nullable=false)
     private Category category;
 
-    public Transaction(Integer id, String note, double amount, String type, boolean isRecurring, LocalDate date, Category category) {
+    public Transaction(Integer id, String note, Double amount, String type, boolean isRecurring, LocalDate date, Category category) {
         this.id = id;
         this.note = note;
         this.amount = amount;
@@ -57,11 +57,11 @@ public class Transaction {
         this.note = note;
     }
 
-    public double getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
